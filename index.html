@@ -5,560 +5,449 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mission Control - $1M/Year Goal</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --accent: #10b981;
+            --accent-hover: #059669;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --radius: 0.5rem;
+            --transition: 0.2s ease;
         }
-        
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-dark);
+            color: var(--text-light);
             min-height: 100vh;
-            padding: 20px;
-            color: #333;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .container { display:flex; min-height:100vh; }
+        .sidebar {
+            width: 260px;
+            background: var(--bg-darker);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem 1rem;
+            overflow-y: auto;
         }
-        
+        .sidebar h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+            display:flex; align-items:center; gap:0.5rem;
+        }
+        .nav-menu { list-style:none; }
+        .nav-item {
+            margin: 0.5rem 0;
+            border-radius: var(--radius);
+            overflow:hidden;
+        }
+        .nav-btn {
+            width:100%;
+            background:transparent;
+            border:none;
+            color:var(--text-light);
+            text-align:left;
+            padding:0.75rem 1rem;
+            font-size:0.95rem;
+            cursor:pointer;
+            display:flex; align-items:center; gap:0.75rem;
+            transition:var(--transition);
+        }
+        .nav-btn:hover, .nav-btn.active {
+            background:var(--bg-card);
+        }
+        .submenu {
+            display:none;
+            background:var(--bg-darker);
+            padding-left:1.5rem;
+        }
+        .submenu a {
+            display:block;
+            color:var(--text-muted);
+            padding:0.5rem 1rem;
+            text-decoration:none;
+            font-size:0.9rem;
+            transition:var(--transition);
+        }
+        .submenu a:hover {
+            color:var(--text-light);
+            background:var(--bg-card);
+        }
+        .main {
+            flex:1;
+            display:flex;
+            flex-direction:column;
+        }
         header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
+            background:var(--bg-darker);
+            border-bottom:1px solid var(--border);
+            padding:1rem 1.5rem;
+            display:flex; justify-content:space-between; align-items:center;
         }
-        
         header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size:1.5rem;
+            color:var(--primary);
+            display:flex; align-items:center; gap:0.5rem;
         }
-        
-        header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        .tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .tab-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-        
-        .tab-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-        
-        .tab-btn.active {
-            background: white;
-            color: #667eea;
-        }
-        
-        .columns {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .column {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-        }
-        
-        .column h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .item {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.2s ease;
-        }
-        
-        .item:hover {
-            transform: translateY(-3px);
-        }
-        
-        .item h3 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-        
-        .item p {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-            line-height: 1.4;
-        }
-        
-        .item-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-        }
-        
-        .btn-approve {
-            background: #4caf50;
-            color: white;
-        }
-        
-        .btn-start {
-            background: #2196f3;
-            color: white;
-        }
-        
-        .btn-ship {
-            background: #ff9800;
-            color: white;
-        }
-        
-        .btn-delete {
-            background: #f44336;
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: #9e9e9e;
-            color: white;
-        }
-        
-        .btn:hover {
-            opacity: 0.9;
-            transform: scale(1.05);
-        }
-        
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .stat {
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-        
-        .stat-label {
-            color: #666;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .footer {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9rem;
-            margin-top: 30px;
-        }
-        
-        .empty-state {
-            text-align: center;
-            color: #999;
-            font-style: italic;
-            padding: 40px 20px;
-        }
-        
         .toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0,0,0,0.2);
-            padding: 10px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            display:flex; gap:0.5rem;
         }
-        
         .toolbar button {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
+            background:var(--bg-card);
+            border:none;
+            color:var(--text-light);
+            padding:0.5rem 1rem;
+            border-radius:var(--radius);
+            cursor:pointer;
+            font-size:0.9rem;
+            transition:var(--transition);
         }
-        
         .toolbar button:hover {
-            background: rgba(255,255,255,0.3);
+            background:var(--primary);
         }
-        
-        @media (max-width: 768px) {
-            .columns {
-                grid-template-columns: 1fr;
-            }
-            
-            header h1 {
-                font-size: 2rem;
-            }
+        .stats {
+            display:flex; gap:1.5rem;
+            padding:1.5rem;
+            background:var(--bg-darker);
+            border-bottom:1px solid var(--border);
+        }
+        .stat {
+            text-align:center;
+            flex:1;
+        }
+        .stat-value {
+            font-size:2rem;
+            font-weight:bold;
+            color:var(--primary);
+        }
+        .stat-label {
+            color:var(--text-muted);
+            font-size:0.9rem;
+            text-transform:uppercase;
+            letter-spacing:0.5px;
+        }
+        .tabs {
+            display:flex;
+            background:var(--bg-darker);
+            border-bottom:1px solid var(--border);
+        }
+        .tab-btn {
+            flex:1;
+            padding:1rem;
+            background:transparent;
+            border:none;
+            color:var(--text-muted);
+            font-size:0.95rem;
+            cursor:pointer;
+            position:relative;
+            transition:var(--transition);
+        }
+        .tab-btn:hover {
+            color:var(--text-light);
+        }
+        .tab-btn.active {
+            color:var(--primary);
+            border-bottom:3px solid var(--primary);
+        }
+        .columns {
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+            gap:1.5rem;
+            padding:1.5rem;
+            flex:1;
+            overflow-y:auto;
+        }
+        .column {
+            background:var(--bg-card);
+            border-radius:var(--radius);
+            padding:1.5rem;
+            box-shadow:0 2px 8px rgba(0,0,0,0.3);
+            transition:var(--transition);
+        }
+        .column:hover {
+            transform:translateY(-2px);
+            box-shadow:0 4px 12px rgba(0,0,0,0.4);
+        }
+        .column h2 {
+            color:var(--primary);
+            margin-bottom:1rem;
+            display:flex; align-items:center; gap:0.5rem;
+            font-size:1.1rem;
+        }
+        .item {
+            background:var(--bg-darker);
+            border-radius:0.375rem;
+            padding:1rem;
+            margin-bottom:0.75rem;
+            border:1px solid var(--border);
+            transition:var(--transition);
+        }
+        .item:hover {
+            background:var(--bg-card);
+        }
+        .item h3 {
+            color:var(--text-light);
+            margin-bottom:0.5rem;
+            font-size:1rem;
+        }
+        .item p {
+            color:var(--text-muted);
+            font-size:0.875rem;
+            margin-bottom:0.75rem;
+            line-height:1.4;
+        }
+        .item-actions {
+            display:flex; gap:0.5rem; flex-wrap:wrap;
+        }
+        .btn {
+            border:none;
+            padding:0.5rem 0.75rem;
+            border-radius:0.375rem;
+            font-size:0.85rem;
+            font-weight:600;
+            cursor:pointer;
+            transition:var(--transition);
+        }
+        .btn-approve { background:var(--accent); color:white; }
+        .btn-approve:hover { background:var(--accent-hover); }
+        .btn-start { background:var(--primary); color:white; }
+        .btn-start:hover { background:var(--primary-hover); }
+        .btn-ship { background:var(--warning); color:white; }
+        .btn-ship:hover { background:#d97706; }
+        .btn-delete { background:var(--danger); color:white; }
+        .btn-delete:hover { background:#dc2626; }
+        .btn-secondary { background:var(--border); color:var(--text-light); }
+        .btn-secondary:hover { background:var(--bg-card); }
+        .empty-state {
+            text-align:center;
+            color:var(--text-muted);
+            font-style:italic;
+            padding:3rem 1rem;
+        }
+        @media (max-width:768px) {
+            .container { flex-direction:column; }
+            .sidebar { width:100%; height:auto; border-right:none; border-bottom:1px solid var(--border); }
+            .main { height:calc(100vh - 60px); }
+            .columns { grid-template-columns:1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="toolbar">
-            <div>
+<div class="container">
+    <aside class="sidebar">
+        <h2>🚀 Mission Control</h2>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <button class="nav-btn active" data-tab="ideas">💡 Ideas</button>
+                <div class="submenu" id="ideas-submenu"></div>
+            </li>
+            <li class="nav-item">
+                <button class="nav-btn" data-tab="approved">✅ Approved</button>
+                <div class="submenu" id="approved-submenu"></div>
+            </li>
+            <li class="nav-item">
+                <button class="nav-btn" data-tab="inProgress">⚡ In Progress</button>
+                <div class="submenu" id="inProgress-submenu"></div>
+            </li>
+            <li class="nav-item">
+                <button class="nav-btn" data-tab="shipped">🎉 Shipped</button>
+                <div class="submenu" id="shipped-submenu"></div>
+            </li>
+        </ul>
+    </aside>
+    <main class="main">
+        <header>
+            <h1>Mission Control Dashboard</h1>
+            <div class="toolbar">
                 <button onclick="exportData()">Export Data</button>
-                <input type="file" id="fileInput" style="display: none;" accept=".json" onchange="importData(event)">
+                <input type="file" id="fileInput" style="display:none;" accept=".json" onchange="importData(event)">
                 <label for="fileInput" style="cursor:pointer;">Import Data</label>
             </div>
-            <div>
-                <small>Data stored in browser localStorage</small>
-            </div>
-        </div>
-        
-        <header>
-            <h1>🚀 Mission Control</h1>
-            <p>$1M/Year Goal Tracking System</p>
         </header>
-        
         <div class="stats" id="stats">
-            <div class="stat">
-                <div class="stat-value" id="ideas-count">0</div>
-                <div class="stat-label">Ideas</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="approved-count">0</div>
-                <div class="stat-label">Approved</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="inprogress-count">0</div>
-                <div class="stat-label">In Progress</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="shipped-count">0</div>
-                <div class="stat-label">Shipped</div>
-            </div>
+            <div class="stat"><div class="stat-value" id="ideas-count">0</div><div class="stat-label">Ideas</div></div>
+            <div class="stat"><div class="stat-value" id="approved-count">0</div><div class="stat-label">Approved</div></div>
+            <div class="stat"><div class="stat-value" id="inprogress-count">0</div><div class="stat-label">In Progress</div></div>
+            <div class="stat"><div class="stat-value" id="shipped-count">0</div><div class="stat-label">Shipped</div></div>
         </div>
-        
         <div class="tabs">
             <button class="tab-btn active" data-tab="ideas">Ideas</button>
             <button class="tab-btn" data-tab="approved">Approved</button>
             <button class="tab-btn" data-tab="inProgress">In Progress</button>
             <button class="tab-btn" data-tab="shipped">Shipped</button>
         </div>
-        
         <div class="columns">
             <div class="column" id="ideas-column">
                 <h2>💡 Ideas</h2>
-                <div class="items-container" id="ideas-items">
-                    <!-- Ideas will be populated here -->
-                </div>
+                <div class="items-container" id="ideas-items"></div>
             </div>
-            
             <div class="column" id="approved-column">
                 <h2>✅ Approved</h2>
-                <div class="items-container" id="approved-items">
-                    <!-- Approved items will be populated here -->
-                </div>
+                <div class="items-container" id="approved-items"></div>
             </div>
-            
             <div class="column" id="inProgress-column">
                 <h2>⚡ In Progress</h2>
-                <div class="items-container" id="inProgress-items">
-                    <!-- In progress items will be populated here -->
-                </div>
+                <div class="items-container" id="inProgress-items"></div>
             </div>
-            
             <div class="column" id="shipped-column">
                 <h2>🎉 Shipped</h2>
-                <div class="items-container" id="shipped-items">
-                    <!-- Shipped items will be populated here -->
-                </div>
+                <div class="items-container" id="shipped-items"></div>
             </div>
         </div>
-    </div>
-    
-    <script>
-        const STORAGE_KEY = 'missionControlData';
-        
-        // Initialize data structure
-        let data = {
-            ideas: [],
-            approved: [],
-            inProgress: [],
-            shipped: []
-        };
-        
-        // Load from localStorage
-        function loadData() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                try {
-                    data = JSON.parse(saved);
-                } catch (e) {
-                    console.error('Failed to parse mission control data', e);
-                }
-            }
-            // Seed with initial ideas if empty
-            if (data.ideas.length === 0) {
-                data.ideas = [
-                    {
-                        id: generateId(),
-                        title: 'Micro-SaaS Boilerplate',
-                        description: 'Starter kit for niche subscription apps with billing, auth, dashboard',
-                        status: 'idea',
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: generateId(),
-                        title: 'API-First Automation Glue',
-                        description: 'Service connecting webhooks to custom actions with visual builder',
-                        status: 'idea',
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: generateId(),
-                        title: 'Niche Content-to-Cash',
-                        description: 'Auto-generated reports/newsletters for specific professions/hobbies',
-                        status: 'idea',
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: generateId(),
-                        title: 'AI-Assisted Freelance Arbitrage',
-                        description: 'Quick delivery of systematized services using LLMs',
-                        status: 'idea',
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: generateId(),
-                        title: 'Digital Asset Flipper',
-                        description: 'Build/acquire simple tools, improve, sell on marketplaces',
-                        status: 'idea',
-                        createdAt: new Date().toISOString()
-                    }
-                ];
-                saveData();
-            }
+    </main>
+</div>
+
+<script>
+    const STORAGE_KEY = 'missionControlData';
+    let data = { ideas:[], approved:[], inProgress:[], shipped:[] };
+
+    function loadData() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            try { data = JSON.parse(saved); } catch(e) { console.error(e); }
         }
-        
-        // Save to localStorage
-        function saveData() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        if (data.ideas.length === 0) {
+            seedIdeas();
         }
-        
-        // Generate simple ID
-        function generateId() {
-            return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        }
-        
-        // Render functions
-        function renderStats() {
-            document.getElementById('ideas-count').textContent = data.ideas.length;
-            document.getElementById('approved-count').textContent = data.approved.length;
-            document.getElementById('inprogress-count').textContent = data.inProgress.length;
-            document.getElementById('shipped-count').textContent = data.shipped.length;
-        }
-        
-        function renderColumn(columnId, items, type) {
-            const container = document.getElementById(`${columnId}-items`);
-            
-            if (items.length === 0) {
+    }
+    function seedIdeas() {
+        const now = new Date().toISOString();
+        const seed = [
+            {title:'Micro-SaaS Boilerplate',description:'Starter kit for niche subscription apps with billing, auth, dashboard',status:'idea'},
+            {title:'API-First Automation Glue',description:'Service connecting webhooks to custom actions with visual builder',status:'idea'},
+            {title:'Niche Content-to-Cash',description:'Auto-generated reports/newsletters for specific professions/hobbies',status:'idea'},
+            {title:'AI-Assisted Freelance Arbitrage',description:'Quick delivery of systematized services using LLMs',status:'idea'},
+            {title:'Digital Asset Flipper',description:'Build/acquire simple tools, improve, sell on marketplaces',status:'idea'}
+        ];
+        data.ideas = seed.map(i => ({...i, id:generateId(), createdAt:now}));
+        saveData();
+    }
+    function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+    function generateId() { return Math.random().toString(36).substring(2,15)+Math.random().toString(36).substring(2,15); }
+
+    function renderAll() {
+        renderStats();
+        renderTabs();
+        renderColumns();
+        renderSubmenus();
+    }
+    function renderStats() {
+        document.getElementById('ideas-count').textContent = data.ideas.length;
+        document.getElementById('approved-count').textContent = data.approved.length;
+        document.getElementById('inprogress-count').textContent = data.inProgress.length;
+        document.getElementById('shipped-count').textContent = data.shipped.length;
+    }
+    function renderTabs() {
+        const tabs = ['ideas','approved','inProgress','shipped'];
+        tabs.forEach(tab => {
+            const btn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+            btn.classList.toggle('active', tab===currentTab);
+        });
+    }
+    function renderColumns() {
+        const columns = ['ideas','approved','inProgress','shipped'];
+        columns.forEach(col => {
+            const container = document.getElementById(`${col}-items`);
+            const items = data[col];
+            if (items.length===0) {
                 container.innerHTML = '<div class="empty-state">No items in this column</div>';
                 return;
             }
-            
             container.innerHTML = items.map(item => `
                 <div class="item" data-id="${item.id}">
                     <h3>${item.title}</h3>
                     <p>${item.description}</p>
                     <div class="item-actions">
-                        ${type === 'idea' ? `
-                            <button class="btn btn-approve" onclick="approveItem('${item.id}')">Approve</button>
-                        ` : ''}
-                        ${type === 'approved' ? `
-                            <button class="btn btn-start" onclick="startItem('${item.id}')">Start Work</button>
-                        : ''}
-                        ${type === 'inProgress' ? `
-                            <button class="btn btn-ship" onclick="shipItem('${item.id}')">Ship!</button>
-                        ` : ''}
-                        ${type !== 'shipped' ? `
-                            <button class="btn btn-delete" onclick="deleteItem('${item.id}', '${type}')">Delete</button>
-                        ` : ''}
+                        ${item.status==='idea'?`<button class="btn btn-approve" onclick="approveItem('${item.id}')">Approve</button>`:''}
+                        ${item.status==='approved'?`<button class="btn btn-start" onclick="startItem('${item.id}')">Start Work</button>`:''}
+                        ${item.status==='inProgress'?`<button class="btn btn-ship" onclick="shipItem('${item.id}')">Ship!</button>`:''}
+                        ${item.status!=='shipped'?`<button class="btn btn-delete" onclick="deleteItem('${item.id}','${item.status}')">Delete</button>`:''}
                     </div>
                 </div>
             `).join('');
-        }
-        
-        function renderAll() {
-            renderStats();
-            renderColumn('ideas', data.ideas, 'idea');
-            renderColumn('approved', data.approved, 'approved');
-            renderColumn('inProgress', data.inProgress, 'inProgress');
-            renderColumn('shipped', data.shipped, 'shipped');
-        }
-        
-        // Action functions
-        function approveItem(id) {
-            const ideaIndex = data.ideas.findIndex(i => i.id === id);
-            if (ideaIndex === -1) return;
-            
-            const idea = data.ideas[ideaIndex];
-            idea.status = 'approved';
-            idea.approvedAt = new Date().toISOString();
-            
-            data.approved.push(idea);
-            data.ideas.splice(ideaIndex, 1);
-            
-            saveData();
-            renderAll();
-        }
-        
-        function startItem(id) {
-            const approvedIndex = data.approved.findIndex(i => i.id === id);
-            if (approvedIndex === -1) return;
-            
-            const approvedItem = data.approved[approvedIndex];
-            approvedItem.status = 'inProgress';
-            approvedItem.startedAt = new Date().toISOString();
-            
-            data.inProgress.push(approvedItem);
-            data.approved.splice(approvedIndex, 1);
-            
-            saveData();
-            renderAll();
-        }
-        
-        function shipItem(id) {
-            const inProgressIndex = data.inProgress.findIndex(i => i.id === id);
-            if (inProgressIndex === -1) return;
-            
-            const inProgressItem = data.inProgress[inProgressIndex];
-            inProgressItem.status = 'shipped';
-            inProgressItem.shippedAt = new Date().toISOString();
-            
-            data.shipped.push(inProgressItem);
-            data.inProgress.splice(inProgressIndex, 1);
-            
-            saveData();
-            renderAll();
-        }
-        
-        function deleteItem(id, type) {
-            if (!confirm('Are you sure you want to delete this item?')) return;
-            
-            let array;
-            switch(type) {
-                case 'idea': array = data.ideas; break;
-                case 'approved': array = data.approved; break;
-                case 'inProgress': array = data.inProgress; break;
-                case 'shipped': array = data.shipped; break;
-                default: return;
-            }
-            
-            const index = array.findIndex(i => i.id === id);
-            if (index !== -1) {
-                array.splice(index, 1);
-                saveData();
-                renderAll();
-            }
-        }
-        
-        // Export/Import
-        function exportData() {
-            const dataStr = JSON.stringify(data, null, 2);
-            const blob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'mission-control-data.json';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-        
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    // Validate basic structure
-                    if (imported.ideas && imported.approved && imported.inProgress && imported.shipped) {
-                        data = imported;
-                        saveData();
-                        renderAll();
-                        alert('Data imported successfully!');
-                    } else {
-                        throw new Error('Invalid data format');
-                    }
-                } catch (err) {
-                    alert('Failed to import data: ' + err.message);
-                }
-            };
-            reader.onerror = function() {
-                alert('Failed to read file');
-            };
-            reader.readAsText(file);
-            
-            // Reset input
-            event.target.value = '';
-        }
-        
-        // Tab switching
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                const tabId = btn.getAttribute('data-tab');
-                document.querySelectorAll('.column').forEach(col => {
-                    col.style.display = col.id === tabId + '-column' ? 'block' : 'none';
-                });
-            });
         });
-        
-        // Initialize
-        loadData();
+    }
+    function renderSubmenus() {
+        const map = {ideas:'ideas-submenu',approved:'approved-submenu',inProgress:'inProgress-submenu',shipped:'shipped-submenu'};
+        Object.entries(map).forEach(([type, id])=>{
+            const el = document.getElementById(id);
+            el.innerHTML = data[type].map(i => `<a href="#" onclick="event.preventDefault(); viewItem('${i.id}')">${i.title}</a>`).join('');
+        });
+    }
+    let currentTab = 'ideas';
+    function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));
+        document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(btn=>btn.classList.remove('active'));
+        document.querySelector(`.nav-btn[data-tab="${tab}"]`).classList.add('active');
+        renderColumns();
+    }
+    function approveItem(id) { moveItem(data.ideas, data.approved, id, 'idea','approved','approvedAt'); }
+    function startItem(id) { moveItem(data.approved, data.inProgress, id, 'approved','inProgress','startedAt'); }
+    function shipItem(id) { moveItem(data.inProgress, data.shipped, id, 'inProgress','shipped','shippedAt'); }
+    function deleteItem(id, from) {
+        if (!confirm('Delete this item?')) return;
+        const map = {idea:data.ideas,approved:data.approved,inProgress:data.inProgress,shipped:data.shipped};
+        const arr = map[from];
+        const idx = arr.findIndex(i=>i.id===id);
+        if (idx!==-1) { arr.splice(idx,1); saveData(); renderAll(); }
+    }
+    function moveItem(fromArr, toArr, id, fromStatus, toStatus, dateField) {
+        const idx = fromArr.findIndex(i=>i.id===id);
+        if (idx===-1) return;
+        const item = fromArr.splice(idx,1)[0];
+        item.status = toStatus;
+        item[dateField] = new Date().toISOString();
+        toArr.push(item);
+        saveData();
         renderAll();
-    </script>
+    }
+    function viewItem(id) {
+        const all = [...data.ideas, ...data.approved, ...data.inProgress, ...data.shipped];
+        const item = all.find(i=>i.id===id);
+        if (!item) return;
+        alert(`${item.title}\n\n${item.description}\n\nStatus: ${item.status}`);
+    }
+    function exportData() {
+        const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a=document.createElement('a'); a.href=url; a.download='mission-control-data.json'; a.click(); URL.revokeObjectURL(url);
+    }
+    function importData(event) {
+        const file=event.target.files[0]; if(!file) return;
+        const reader=new FileReader();
+        reader.onload=e=>{
+            try{
+                const parsed=JSON.parse(e.target.result);
+                if(parsed.ideas && parsed.approved && parsed.inProgress && parsed.shipped){
+                    data=parsed; saveData(); renderAll(); alert('Imported!');
+                }else{ throw new Error('Invalid format'); }
+            }catch(err){ alert('Failed: '+err.message); }
+        };
+        reader.onerror=()=>alert('Failed to read file');
+        reader.readAsText(file);
+        event.target.value='';
+    }
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn=>{
+        btn.addEventListener('click',()=>{ switchTab(btn.getAttribute('data-tab')); });
+    });
+    // Nav switching
+    document.querySelectorAll('.nav-btn').forEach(btn=>{
+        btn.addEventListener('click',()=>{ switchTab(btn.getAttribute('data-tab')); });
+    });
+    // Submenu click closes on mobile? keep open.
+    loadData();
+    renderAll();
+</script>
 </body>
 </html>
