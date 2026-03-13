@@ -308,26 +308,36 @@
 <script>
     const STORAGE_KEY = 'missionControlData';
     let data = { ideas:[], approved:[], inProgress:[], shipped:[] };
+    let currentTab = 'ideas';
 
     function loadData() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
             try { data = JSON.parse(saved); } catch(e) { console.error(e); }
         }
-        if (data.ideas.length === 0) {
-            seedIdeas();
+        // If no data at all, seed with default: ideas list plus one approved (Digital Asset Flipper)
+        if (!data.ideas && !data.approved && !data.inProgress && !data.shipped) {
+            seedDefault();
         }
     }
-    function seedIdeas() {
+    function seedDefault() {
         const now = new Date().toISOString();
-        const seed = [
-            {title:'Micro-SaaS Boilerplate',description:'Starter kit for niche subscription apps with billing, auth, dashboard',status:'idea'},
-            {title:'API-First Automation Glue',description:'Service connecting webhooks to custom actions with visual builder',status:'idea'},
-            {title:'Niche Content-to-Cash',description:'Auto-generated reports/newsletters for specific professions/hobbies',status:'idea'},
-            {title:'AI-Assisted Freelance Arbitrage',description:'Quick delivery of systematized services using LLMs',status:'idea'},
-            {title:'Digital Asset Flipper',description:'Build/acquire simple tools, improve, sell on marketplaces',status:'idea'}
+        const ideasList = [
+            {title:'Micro-SaaS Boilerplate',description:'Starter kit for niche subscription apps with billing, auth, dashboard'},
+            {title:'API-First Automation Glue',description:'Service connecting webhooks to custom actions with visual builder'},
+            {title:'Niche Content-to-Cash',description:'Auto-generated reports/newsletters for specific professions/hobbies'},
+            {title:'AI-Assisted Freelance Arbitrage',description:'Quick delivery of systematized services using LLMs'}
         ];
-        data.ideas = seed.map(i => ({...i, id:generateId(), createdAt:now}));
+        data.ideas = ideasList.map(i => ({...i, id:generateId(), createdAt:now, status:'idea'}));
+        // Approved: Digital Asset Flipper
+        data.approved = [{
+            title:'Digital Asset Flipper',
+            description:'Build/acquire simple tools, improve, sell on marketplaces',
+            id:generateId(),
+            createdAt:now,
+            status:'approved',
+            approvedAt:now
+        }];
         saveData();
     }
     function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
@@ -382,7 +392,6 @@
             el.innerHTML = data[type].map(i => `<a href="#" onclick="event.preventDefault(); viewItem('${i.id}')">${i.title}</a>`).join('');
         });
     }
-    let currentTab = 'ideas';
     function switchTab(tab) {
         currentTab = tab;
         document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));
